@@ -39,7 +39,7 @@ int main() {
 
     reverse(a.begin(), a.end());
 
-    for (auto const &v: c) {
+    for (const auto &v: c) {
         if (!a.empty() && a.back() >= v) {
             a.pop_back();
             ++result;
