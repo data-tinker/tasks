@@ -38,7 +38,7 @@ void removeDuplicatesWithDS(std::string &s) {
 }
 
 int main() {
-    for (auto &testString: TestCases) {
+    for (auto& testString: TestCases) {
         removeDuplicatesWithDS(testString);
         std::cout << testString << std::endl;
     }
