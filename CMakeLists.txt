@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(tasks)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 add_executable(tasks
         leetcode/binary_tree_inorder_traversal.cpp
@@ -67,11 +67,20 @@ add_executable(tasks
         misc/topsort.cpp
         misc/union_intersection_lists.cpp)
 
+add_library(linked_list cracking_interview/linked_lists/linked_list.h)
+
+SET_TARGET_PROPERTIES(linked_list PROPERTIES LINKER_LANGUAGE CXX)
+
 add_executable(unique_characters cracking_interview/arrays_and_strings/unique_characters.cpp)
 add_executable(rotate_matrix cracking_interview/arrays_and_strings/rotate_matrix.cpp)
 add_executable(reverse cracking_interview/arrays_and_strings/reverse.cpp)
 add_executable(fill_with_zeroes cracking_interview/arrays_and_strings/fill_with_zeroes.cpp)
 add_executable(replace cracking_interview/arrays_and_strings/replace.cpp)
-add_executable(remove_duplicates cracking_interview/arrays_and_strings/remove_duplicates.cpp)
+add_executable(remove_duplicates cracking_interview/arrays_and_strings/remove_duplicate_chars.cpp)
 add_executable(anagram cracking_interview/arrays_and_strings/anagram.cpp)
 add_executable(string_rotation cracking_interview/arrays_and_strings/string_rotation.cpp)
+add_executable(remove_duplicate_nodes cracking_interview/linked_lists/remove_duplicate_nodes.cpp)
+add_executable(find_nth_to_last cracking_interview/linked_lists/find_nth_to_last.cpp)
+add_executable(delete_node cracking_interview/linked_lists/delete_node.cpp)
+add_executable(sum_lists cracking_interview/linked_lists/sum_lists.cpp)
+add_executable(find_cycle cracking_interview/linked_lists/find_cycle.cpp)

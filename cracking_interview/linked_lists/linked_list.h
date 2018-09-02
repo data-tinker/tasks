@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <stdexcept>
 
 namespace NLinkedList {
     template<typename T>
@@ -100,6 +101,10 @@ namespace NLinkedList {
         }
 
         const LinkedListNode& operator[](std::size_t position) const {
+            if (position > Size() - 1) {
+                throw std::out_of_range("");
+            }
+
             auto currentNode = GetHead();
 
             for (size_t i = 0; i < position; ++i) {
@@ -126,6 +131,28 @@ namespace NLinkedList {
             }
 
             ++Size_;
+        }
+
+        void Erase(std::size_t position) {
+            auto& node = (*this)[position];
+
+            if (position == 0) {
+                Head = std::move(node.Next);
+            } else if (position == Size() - 1) {
+                PopBack();
+            } else {
+                node.Data = node.Next->Data;
+                node.Next = std::move(node.Next->Next);
+            }
+        }
+
+        void PopBack() {
+            auto currentNode = GetHead();
+
+            while (currentNode->Next->Next) {
+                currentNode = currentNode->Next.get();
+            }
+            currentNode->Next = nullptr;
         }
 
         LinkedListNode* GetHead() {
