@@ -11,8 +11,8 @@ namespace NLinkedList {
             std::unique_ptr<LinkedListNode> Next;
             T Data;
 
-            explicit LinkedListNode(const T &data)
-                    : Data(data) {}
+            explicit LinkedListNode(const T& data)
+                : Data(data) {}
         };
 
         template <bool Const = true>
