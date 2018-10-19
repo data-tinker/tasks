@@ -17,7 +17,7 @@ struct TreeNode {
     {}
 };
 
-vector<vector<int>> levelOrder(TreeNode* root) {
+vector<vector<int>> binaryTreeToLinkedLists(TreeNode* root) {
     vector<vector<int>> result;
     queue<pair<size_t, TreeNode*>> bfs;
     size_t currentHeight = 0;
@@ -55,7 +55,7 @@ int main() {
     head->left->left = new TreeNode(4);
     head->right->right = new TreeNode(5);
 
-    auto linkedLists = levelOrder(head);
+    auto linkedLists = binaryTreeToLinkedLists(head);
 
     for (const auto& l: linkedLists) {
         for (auto n: l) {
