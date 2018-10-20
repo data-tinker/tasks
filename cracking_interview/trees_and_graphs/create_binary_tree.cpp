@@ -1,19 +1,8 @@
 #include <iostream>
 #include <vector>
+#include "tree_node.h"
 
 using namespace std;
-
-struct TreeNode {
-    TreeNode(int x)
-        : val(x)
-        , left(nullptr)
-        , right(nullptr)
-    {}
-
-    int val;
-    TreeNode* left;
-    TreeNode* right;
-};
 
 TreeNode* subarrayToBST(vector<int>::const_iterator b, vector<int>::const_iterator e) {
     if (b < e) {

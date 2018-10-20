@@ -3,19 +3,9 @@
 #include <queue>
 #include <list>
 #include <tuple>
+#include "tree_node.h"
 
 using namespace std;
-
-struct TreeNode {
-    int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode(int x)
-        : val(x)
-        , left(nullptr)
-        , right(nullptr)
-    {}
-};
 
 vector<vector<int>> binaryTreeToLinkedLists(TreeNode* root) {
     vector<vector<int>> result;
@@ -25,9 +15,7 @@ vector<vector<int>> binaryTreeToLinkedLists(TreeNode* root) {
     bfs.push({1, root});
 
     while (!bfs.empty()) {
-        size_t height;
-        TreeNode* node;
-        tie(height, node) = bfs.front();
+        auto [height, node] = bfs.front();
         bfs.pop();
 
         if (!node) {
