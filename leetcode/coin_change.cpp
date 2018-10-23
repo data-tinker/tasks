@@ -1,32 +1,31 @@
 #include <iostream>
 #include <vector>
-#include <limits>
+#include <climits>
 
 using namespace std;
 
+int coinChange(vector<int>& coins, int amount) {
+    vector<int> dp(amount + 1, amount + 1);
+    dp[0] = 0;
 
-int coinChange(vector<int> &coins, int amount) {
-    int max_amount = amount + 1;
-    vector<int> states(amount + 1, max_amount);
-
-    states[0] = 0;
-
-    for (size_t i = 1; i <= amount; ++i) {
-        for (size_t j = 0; j < coins.size(); ++j) {
-            if (coins[j] <= i)
-               states[i] = min(states[i], states[i - coins[j]] + 1);
+    for (int i = 1; i <= amount; ++i) {
+        for (auto coin: coins) {
+            if (i - coin >= 0) {
+                dp[i] = min(dp[i], dp[i - coin] + 1);
+            }
         }
     }
 
-    return states[amount] > amount ? -1 : states[amount];
+    if (dp[amount] == amount + 1) {
+        return -1;
+    }
+
+    return dp[amount];
 }
 
-
 int main() {
-    vector<int> coins{3};
-    int amount = 4;
-
-    cout << coinChange(coins, amount) << endl;
+    vector<int> coins{1};
+    cout << coinChange(coins, 0) << endl;
 
     return 0;
 }
