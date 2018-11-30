@@ -1,48 +1,36 @@
 #include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <cmath>
-#include <queue>
 #include <stack>
-#include <map>
-#include <set>
 #include <unordered_map>
-#include <unordered_set>
-#include <limits>
-#include <cassert>
-#include <fstream>
-#include <array>
 
-using std::cout;
-using std::cin;
-using std::string;
-using std::vector;
+using namespace std;
 
-#define endl '\n'
+bool isValid(const string& s) {
+    stack<char> pStack;
+    unordered_map<char, char> openToClose = {
+        {'(', ')'}, {'{', '}'}, {'[', ']'}
+    };
+    unordered_map<char, char> closeToOpen = {
+        {')', '('}, {'}', '{'}, {']', '['}
+    };
 
-
-bool isValid(string s) {
-    std::unordered_map<char, char> openToClosedBracket{{'(', ')'}, {'{', '}'}, {'[', ']'}};
-    std::stack<char> bracketStack;
-
-    for (const auto &bracket: s) {
-        if (openToClosedBracket.find(bracket) == openToClosedBracket.end()) {
-            if (!bracketStack.empty()) {
-                if (bracketStack.top() != bracket) {
-                    return false;
-                } else {
-                    bracketStack.pop();
-                }
-            } else {
+    for (auto c: s) {
+        if (openToClose.find(c) != openToClose.end()) {
+            pStack.push(c);
+        } else {
+            if (pStack.empty()) {
                 return false;
             }
-        } else {
-            bracketStack.push(openToClosedBracket[bracket]);
+
+            auto prevOpen = pStack.top();
+            pStack.pop();
+
+            if (closeToOpen[c] != prevOpen) {
+                return false;
+            }
         }
     }
 
-    if (!bracketStack.empty()) {
+    if (!pStack.empty()) {
         return false;
     }
 
@@ -50,14 +38,7 @@ bool isValid(string s) {
 }
 
 int main() {
-    std::ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cout.precision(10);
-
-    string s;
-    cin >> s;
-
-    cout << isValid(s) << endl;
+    cout << isValid("(())") << endl;
 
     return 0;
 }
