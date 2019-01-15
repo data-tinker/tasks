@@ -1,66 +1,55 @@
 #include <iostream>
 #include <vector>
+#include <limits>
 
 using namespace std;
 
 struct Interval {
-    int start = 0;
-    int end = 0;
+    int start;
+    int end;
+
+    Interval()
+        : start(0)
+        , end(0)
+    {}
 
     Interval(int s, int e)
         : start(s)
         , end(e)
     {}
-
-    Interval() = default;
 };
 
-class Solution {
-public:
-    static vector<Interval> merge(vector<Interval>& intervals) {
-        if (intervals.empty()) {
-            return {};
-        }
-
-        sort(begin(intervals), end(intervals), [](const Interval& lhs, const Interval& rhs) {
-            if (lhs.start == rhs.start) {
-                return lhs.end < rhs.end;
-            }
-
-            return lhs.start < rhs.start;
-        });
-
-        vector<Interval> result{intervals.front()};
-
-        for (const auto& interval: intervals) {
-            auto& lastInterval = result.back();
-
-            if (interval.start > lastInterval.end) {
-                result.push_back(interval);
-            } else if (interval.end > lastInterval.end) {
-                lastInterval.end = interval.end;
-            }
-        }
-
-        return result;
+vector<Interval> merge(vector<Interval>& intervals) {
+    if (intervals.empty()) {
+        return vector<Interval>();
     }
-};
+
+    sort(intervals.begin(), intervals.end(), [](const auto & lhs, const auto & rhs){
+        return lhs.start < rhs.start;
+    });
+
+    vector<Interval> result;
+    int currentEnd = numeric_limits<int>::min();
+
+    for (const auto & interval: intervals) {
+        if (interval.start > currentEnd) {
+            result.push_back(interval);
+            currentEnd = interval.end;
+        } else {
+            currentEnd = max(interval.end, currentEnd);
+            result.back().end = currentEnd;
+        }
+    }
+
+    return result;
+}
 
 int main() {
-    int n, l, r;
+    vector<Interval> intervals{{1,3}, {2,6}, {8,10}, {15,18}};
 
-    cin >> n;
-    vector<Interval> intervals(n);
+    auto mergedIntervals = merge(intervals);
 
-    for (auto& interval: intervals) {
-        cin >> l >> r;
-        interval.start = l;
-        interval.end = r;
-    }
-
-    auto mergedIntervals = Solution::merge(intervals);
-
-    for (const auto& interval: mergedIntervals) {
+    for (const auto & interval : mergedIntervals) {
         cout << interval.start << ' ' << interval.end << endl;
     }
 
