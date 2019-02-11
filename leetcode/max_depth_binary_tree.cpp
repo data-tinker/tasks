@@ -28,25 +28,12 @@ struct TreeNode {
 };
 
 
-int max_depth(TreeNode *root, int height = 0) {
-    if (root == nullptr)
+int maxDepth(TreeNode *root) {
+    if (root == nullptr) {
         return 0;
-
-    ++height;
-
-    if (root->left == nullptr && root->right == nullptr)
-        return height;
-    else {
-        int l_height = numeric_limits<int>::min();
-        int r_height = numeric_limits<int>::min();
-
-        if (root->left != nullptr)
-            l_height = max_depth(root->left, height);
-        if (root->right != nullptr)
-            r_height = max_depth(root->right, height);
-
-        return max(r_height, l_height);
     }
+
+    return 1 + max(maxDepth(root->left), maxDepth(root->right));
 }
 
 
@@ -67,7 +54,7 @@ int main() {
         tree[i].right =  (right != -1) ? &tree[right]: nullptr;
     }
 
-    cout << max_depth(&tree[0]) << endl;
+    cout << maxDepth(&tree[0]) << endl;
 
     return 0;
 }

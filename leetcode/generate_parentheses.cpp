@@ -26,6 +26,7 @@ vector<string> generateParenthesis(int n) {
     return parenthesis;
 }
 
+
 int main() {
     int n;
     cin >> n;
