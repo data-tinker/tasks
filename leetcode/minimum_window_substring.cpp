@@ -26,7 +26,7 @@ string minWindow(string s, string t) {
 
     unordered_map<char, int> w;
     unordered_map<char, int> tw;
-    unordered_set<char> ts;
+    int ts = 0;
 
     for (const auto& c : t) {
         ++tw[c];
@@ -38,7 +38,7 @@ string minWindow(string s, string t) {
     size_t l = 0, lr;
 
     while (r < s.size()) {
-        if (ts.size() == tSize) {
+        if (ts == tSize) {
             if (r - l < resultSize) {
                 resultSize = r - l;
                 lr = l;
@@ -46,16 +46,16 @@ string minWindow(string s, string t) {
             }
             --w[s[l]];
 
-            if (tw.find(s[l]) != tw.end() && w[s[l]] < tw[s[l]]) {
-                ts.erase(s[l]);
+            if (tw.find(s[l]) != tw.end() && w[s[l]] == tw[s[l]] - 1) {
+                --ts;
             }
 
             ++l;
         } else {
             ++w[s[r]];
 
-            if (tw.find(s[r]) != tw.end() && w[s[r]] >= tw[s[r]]) {
-                ts.insert(s[r]);
+            if (tw.find(s[r]) != tw.end() && w[s[r]] == tw[s[r]]) {
+                ++ts;
             }
 
             ++r;
@@ -63,7 +63,7 @@ string minWindow(string s, string t) {
     }
 
     while (l < s.size()) {
-        if (ts.size() == tSize) {
+        if (ts == tSize) {
             if (r - l < resultSize) {
                 resultSize = r - l;
                 lr = l;
@@ -73,8 +73,8 @@ string minWindow(string s, string t) {
 
         --w[s[l]];
 
-        if (tw.find(s[l]) != tw.end() && w[s[l]] < tw[s[l]]) {
-            ts.erase(s[l]);
+        if (tw.find(s[l]) != tw.end() && w[s[l]] == tw[s[l]] - 1) {
+            --ts;
         }
 
         ++l;
@@ -94,7 +94,7 @@ string minWindow(string s, string t) {
 }
 
 int main() {
-    cout << minWindow("A", "A") << endl;
+    cout << minWindow("ADOBECODEBANC", "ABC") << endl;
 
     return 0;
 }
