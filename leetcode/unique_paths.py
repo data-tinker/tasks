@@ -15,4 +15,4 @@ class Solution(object):
 
         return dp[n - 1][m - 1]
 
-print Solution().uniquePaths(100, 100)
+print Solution().uniquePaths(38, 6)
