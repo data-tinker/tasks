@@ -7,15 +7,11 @@ using namespace std;
 class Solution {
 public:
     vector<vector<int>> threeSum(vector<int>& nums) {
-        if (nums.size() < 3) {
-            return {};
-        }
-
         vector<vector<int>> result;
 
         sort(begin(nums), end(nums));
 
-        for (size_t firstIdx = 0; firstIdx < nums.size() - 2; ++firstIdx) {
+        for (size_t firstIdx = 0; firstIdx < nums.size(); ++firstIdx) {
             if (firstIdx > 0 && nums[firstIdx] == nums[firstIdx - 1]) {
                 continue;
             }

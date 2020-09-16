@@ -6,21 +6,18 @@ class Solution(object):
         :type nums: List[int]
         :rtype: List[List[int]]
         """
-        if (len(nums) < 3):
-            return []
-
         result = []
 
         nums.sort()
 
-        for first_idx, first_value in enumerate(nums):
+        for first_idx in range(len(nums)):
             if first_idx > 0 and nums[first_idx] == nums[first_idx - 1]:
                 continue
 
             second_idx = first_idx + 1
             third_idx = len(nums) - 1
 
-            required_sum  = 0 - first_value;
+            required_sum  = 0 - nums[first_idx];
 
             while second_idx < third_idx:
                 current_sum = nums[second_idx] + nums[third_idx]
@@ -30,7 +27,7 @@ class Solution(object):
                 elif current_sum > required_sum:
                     third_idx -= 1
                 else:
-                    result.append([first_value, nums[second_idx], nums[third_idx]])
+                    result.append([nums[first_idx], nums[second_idx], nums[third_idx]])
                     second_idx += 1
                     while second_idx < third_idx and nums[second_idx] == nums[second_idx - 1]:
                         second_idx += 1

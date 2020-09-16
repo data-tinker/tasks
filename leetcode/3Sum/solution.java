@@ -17,10 +17,6 @@ class Solution {
     }
 
     public List<List<Integer>> threeSum(int[] nums) {
-        if (nums.length < 3) {
-            return List.of();
-        }
-
         List<List<Integer>> result = new ArrayList<List<Integer>>();
 
         Arrays.sort(nums);
