@@ -20,22 +20,25 @@ class LetterCombinations {
 
     public List<String> letterCombinations(String digits) {
         List<String> combinations = new ArrayList();
+        if (digits.isEmpty()) {
+            return combinations;
+        }
 
-        combinationsHelper(digits, 0, combinations, "");
+        combinationsHelper(digits, 0, combinations, new StringBuilder());
 
         return combinations;
     }
 
-    private void combinationsHelper(String digits, int idx, List<String> combinations, String currentCombination) {
+    private void combinationsHelper(String digits, int idx, List<String> combinations, StringBuilder currentCombination) {
         if (idx == digits.length()) {
-            if (!currentCombination.isEmpty()) {
-                combinations.add(currentCombination);
-            }
+            combinations.add(currentCombination.toString());
             return;
         }
 
         for (char c: numberToLetters.get(digits.charAt(idx))) {
-            combinationsHelper(digits, idx + 1, combinations, currentCombination + c);
+            currentCombination.append(c);
+            combinationsHelper(digits, idx + 1, combinations, currentCombination);
+            currentCombination.setLength(currentCombination.length() - 1);
         }
     }
 }
