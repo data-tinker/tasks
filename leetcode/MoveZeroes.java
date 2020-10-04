@@ -8,8 +8,6 @@ class MoveZeroes {
             if (n != 0) {
                 nums[idx] = n;
                 ++idx;
-            } else {
-                nums[idx] = n;
             }
         }
 
