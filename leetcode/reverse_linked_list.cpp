@@ -1,48 +1,46 @@
-#include <iostream>
-
-using namespace std;
-
-
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode(int x): val(x), next(NULL) {}
-
-    void print() {
-        ListNode *current = this;
-        while (current) {
-            cout << current->val << endl;
-            current = current->next;
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+private:
+    ListNode* reverseListIterative(ListNode* head) {
+        if (!head) {
+            return nullptr;
         }
+
+        ListNode* prev = nullptr;
+        ListNode* next = head->next;
+
+        while (head) {
+            next = head->next;
+            head->next = prev;
+            prev = head;
+            head = next;
+        }
+
+        return prev;
+    }
+
+    ListNode* reverseListRecursive(ListNode* head) {
+        if (!head || !head->next) {
+            return head;
+        }
+
+        auto next = reverseListRecursive(head->next);
+        head->next->next = head;
+        head->next = nullptr;
+
+        return next;
+    }
+public:
+    ListNode* reverseList(ListNode* head) {
+        return reverseListRecursive(head);
     }
 };
-
-
-ListNode* reverseList(ListNode *head) {
-    ListNode *previous = NULL;
-    ListNode *current = head;
-    ListNode *next = NULL;
-
-    while (current) {
-        next = current->next;
-        current->next = previous;
-        previous = current;
-        current = next;
-    }
-
-    return previous;
-}
-
-
-int main() {
-    ListNode *head = new ListNode(1);
-    head->next = new ListNode(2);
-    head->next->next = new ListNode(3);
-    head->next->next->next = new ListNode(4);
-
-    head = reverseList(head);
-
-    head->print();
-
-    return 0;
-}

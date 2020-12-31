@@ -24,24 +24,26 @@ public:
 
 class Solution {
 private:
-    Node* first = nullptr;
     Node* last = nullptr;
+    Node* first = nullptr;
 
     void helper(Node* node) {
-        if (node) {
-           helper(node->left);
-
-            if (last) {
-                last->right = node;
-                node->left = last;
-            } else {
-                first = node;
-            }
-
-            last = node;
-
-            helper(node->right);
+        if (!node) {
+            return;
         }
+
+        helper(node->left);
+
+        if (first) {
+            node->left = last;
+            last->right = node;
+        } else {
+            first = node;
+        }
+
+        last = node;
+
+        helper(node->right);
     }
 public:
     Node* treeToDoublyList(Node* root) {
