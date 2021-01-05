@@ -45,31 +45,34 @@ private:
         return result;
     }
 
-    string decodeStringTwoStacks(const string& s) {
-        stack<int> countStack;
+    string decodeStringTwoStacks(string s) {
         stack<string> stringStack;
-        string currentString;
-        int k = 0;
+        stack<int> numberStack;
 
-        for (const auto ch : s) {
-            if (isdigit(ch)) {
-                k = k * 10 + ch - '0';
-            } else if (ch == '[') {
-                countStack.push(k);
-                stringStack.push(currentString);
-                currentString = "";
-                k = 0;
-            } else if (ch == ']') {
+        string currentString;
+        int currentNumber = 0;
+
+        for (const auto c : s) {
+            if (c == ']') {
                 string decodedString = stringStack.top();
                 stringStack.pop();
 
-                for (int i = countStack.top(); i > 0; --i) {
+                for (size_t i = 0; i < numberStack.top(); ++i) {
                     decodedString += currentString;
                 }
-                countStack.pop();
+                numberStack.pop();
+
                 currentString = decodedString;
+            } else if (c == '[') {
+                stringStack.push(currentString);
+                numberStack.push(currentNumber);
+
+                currentString = "";
+                currentNumber = 0;
+            } else if (isdigit(c)) {
+                currentNumber = currentNumber * 10 + c - '0';
             } else {
-                currentString = currentString + ch;
+                currentString += c;
             }
         }
 
