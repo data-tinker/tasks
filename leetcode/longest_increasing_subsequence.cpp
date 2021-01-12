@@ -1,32 +1,35 @@
-#include <iostream>
-#include <algorithm>
-#include <vector>
+class Solution {
+private:
+    int lengthOfLisDp(vector<int>& nums) {
+        vector<int> dp(nums.size(), 1);
 
-using namespace std;
-
-
-int lengthOfLIS(vector<int> &nums) {
-    size_t n = nums.size();
-    if (n == 0)
-        return 0;
-
-    vector<int> states(n, 1);
-
-    for (size_t i = 0; i < n; ++i) {
-        for (size_t j = 0; j < i; ++j) {
-            if (nums[i] > nums[j])
-                states[i] = max(states[i], states[j] + 1);
+        for (size_t i = 0; i < nums.size(); ++i) {
+            for (size_t j = 0; j < i; ++j) {
+                if (nums[i] > nums[j]) {
+                    dp[i] = max(dp[i], dp[j] + 1);
+                }
+            }
         }
+
+        return *max_element(begin(dp), end(dp));
     }
 
-    return *max_element(states.begin(), states.end());
-}
+    int lengthOfLisDpBinary(vector<int>& nums) {
+        vector<int> dp;
 
+        for (size_t i = 0; i < nums.size(); ++i) {
+            auto it = lower_bound(begin(dp), end(dp), nums[i]);
+            if (it == dp.end()) {
+                dp.push_back(nums[i]);
+            } else {
+                *it = nums[i];
+            }
+        }
 
-int main() {
-    vector<int> nums{10, 9, 2, 5, 3, 7, 101, 18};
-
-    cout << lengthOfLIS(nums) << endl;
-
-    return 0;
-}
+        return dp.size();
+    }
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        return lengthOfLisDpBinary(nums);
+    }
+};
