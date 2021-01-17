@@ -11,6 +11,21 @@ private:
         return c - 'a';
     }
 
+    TrieNode* iterateWord(const string& word) {
+        auto current = head.get();
+
+        for (const auto c : word) {
+            size_t idx = getIdx(c);
+
+            if (!current->children[idx]) {
+                return nullptr;
+            }
+
+            current = current->children[idx].get();
+        }
+
+        return current;
+    }
 public:
     /** Initialize your data structure here. */
     Trie() {
@@ -36,16 +51,10 @@ public:
 
     /** Returns if the word is in the trie. */
     bool search(string word) {
-        auto current = head.get();
+        auto current = iterateWord(word);
 
-        for (const auto c : word) {
-            size_t idx = getIdx(c);
-
-            if (!current->children[idx]) {
-                return false;
-            }
-
-            current = current->children[idx].get();
+        if (!current) {
+            return false;
         }
 
         return current->end;
@@ -53,16 +62,10 @@ public:
 
     /** Returns if there is any word in the trie that starts with the given prefix. */
     bool startsWith(string prefix) {
-        auto current = head.get();
+        auto current = iterateWord(prefix);
 
-        for (const auto c : prefix) {
-            size_t idx = getIdx(c);
-
-            if (!current->children[idx]) {
-                return false;
-            }
-
-            current = current->children[idx].get();
+        if (!current) {
+            return false;
         }
 
         return true;
