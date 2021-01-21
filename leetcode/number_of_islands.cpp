@@ -1,73 +1,154 @@
-#include <iostream>
-#include <unordered_set>
-#include <vector>
+class UnionFind {
+private:
+    int count = 0;
+    vector<int> parent;
+    vector<int> rank;
+public:
+    UnionFind(vector<vector<char>>& grid)
+        : parent(grid.size() * grid[0].size(), -1)
+        , rank(grid.size() * grid[0].size(), 0)
+    {
+        size_t n = grid.size();
+        size_t m = grid[0].size();
 
-using namespace std;
+        for (size_t i = 0; i < n; ++i) {
+          for (size_t j = 0; j < m; ++j) {
+              if (grid[i][j] == '1') {
+                  parent[i * m + j] = i * m + j;
+                  ++count;
+              }
+          }
+        }
+    }
 
+    int findSet(int i) {
+        if (parent[i] != i) {
+            parent[i] = findSet(parent[i]);
+        }
 
-struct TPairHash {
-    size_t operator()(const pair<int, int> &p) const {
-        return p.first ^ p.second;
+        return parent[i];
+    }
+
+    void unionSets(int x, int y) {
+        int parentX = findSet(x);
+        int parentY = findSet(y);
+
+        if (parentX != parentY) {
+            if (rank[parentX] > rank[parentY]) {
+                parent[parentY] = parentX;
+            } else if (rank[parentX] < rank[parentY]) {
+                parent[parentX] = parentY;
+            } else {
+                parent[parentY] = parentX;
+                rank[parentX] += 1;
+            }
+            --count;
+        }
+    }
+
+    int getCount() {
+        return count;
     }
 };
 
+class Solution {
+private:
+    static constexpr pair<int, int> neighbours[] = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
 
-void dfs(vector<vector<char> > &grid, unordered_set<pair<int, int>, TPairHash > &nodes, pair<int, int> node, int n, int m) {
-    nodes.erase(node);
-    vector<pair<int, int> > neighbours{{-1, 0} , {1, 0}, {0, -1}, {0, 1}};
+    int numIslandsDSU(vector<vector<char>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
 
-    for (auto const &nb: neighbours) {
-        int n_first = node.first + nb.first;
-        int n_second = node.second + nb.second;
-        if (n_first >= 0 && n_first < n
-            && n_second >= 0 && n_second < m
-            && grid[n_first][n_second] == '1'
-        ) {
-            pair<int, int> new_node = make_pair(n_first, n_second);
-            if (nodes.find(new_node) != nodes.end())
-                dfs(grid, nodes, new_node, n, m);
+        int num = 0;
+        UnionFind unionFind(grid);
+        for (size_t i = 0; i < n; ++i) {
+            for (size_t j = 0; j < m; ++j) {
+                if (grid[i][j] == '1') {
+                    grid[i][j] == '0';
+
+                    for (const auto& nb : neighbours) {
+                        int nbRow = i + nb.first;
+                        int nbCol = j + nb.second;
+
+                        if (nbRow < n && nbRow >= 0 && nbCol < m && nbCol >= 0 &&
+                           grid[nbRow][nbCol] == '1') {
+                            unionFind.unionSets(i * m + j, nbRow * m + nbCol);
+                        }
+                    }
+                }
+            }
+        }
+
+        return unionFind.getCount();
+    }
+
+    void dfs(vector<vector<char>>& grid, int row, int col) {
+        for (const auto& nb : neighbours) {
+            int nbRow = row + nb.first;
+            int nbCol = col + nb.second;
+
+            if (nbRow < grid.size() && nbRow >= 0 && nbCol < grid[0].size() && nbCol >= 0 &&
+                grid[nbRow][nbCol] == '1') {
+                grid[nbRow][nbCol] = '0';
+                dfs(grid, nbRow, nbCol);
+            }
         }
     }
-}
+
+    int numIslandsDFS(vector<vector<char>>& grid) {
+        int num = 0;
+        for (size_t i = 0; i < grid.size(); ++i) {
+            for (size_t j = 0; j < grid[0].size(); ++j) {
+                if (grid[i][j] == '1') {
+                    ++num;
+                    grid[i][j] = '0';
+                    dfs(grid, i, j);
+                }
+            }
+        }
+
+        return num;
+    }
+
+    void bfs(vector<vector<char>>& grid, const pair<int, int>& startNode) {
+        queue<pair<int, int>> nodesQueue;
+
+        grid[startNode.first][startNode.second] = '0';
+        nodesQueue.push(startNode);
+
+        while (!nodesQueue.empty()) {
+            auto node = nodesQueue.front();
+            nodesQueue.pop();
 
 
-int numIslands(vector<vector<char> > &grid) {
-    int n = grid.size();
+            for (const auto& nbShift : neighbours) {
+                auto nb = make_pair(node.first + nbShift.first, node.second + nbShift.second);
 
-    if (n == 0)
-        return 0;
-
-    int m = grid[0].size();
-    int result = 0;
-
-    unordered_set<pair<int, int>, TPairHash > nodes;
-
-    for (size_t i = 0; i < n; ++i) {
-        for (size_t j = 0; j < m; ++j) {
-            if (grid[i][j] == '1')
-                nodes.insert(make_pair(i, j));
+                if (nb.first < grid.size() && nb.first >= 0 && nb.second < grid[0].size() && nb.second >= 0 &&
+                   grid[nb.first][nb.second] == '1') {
+                    grid[nb.first][nb.second] = '0';
+                    nodesQueue.push(nb);
+                }
+            }
         }
     }
 
-    while (!nodes.empty()) {
-        pair<int, int> node = *nodes.begin();
-        dfs(grid, nodes, node, n, m);
-        ++result;
+    int numIslandsBFS(vector<vector<char>>& grid) {
+        int num = 0;
+        for (size_t i = 0; i < grid.size(); ++i) {
+            for (size_t j = 0; j < grid[0].size(); ++j) {
+                if (grid[i][j] == '1') {
+                    ++num;
+                    bfs(grid, make_pair(i, j));
+                }
+            }
+        }
+
+        return num;
     }
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        return numIslandsDSU(grid);
+    }
+};
 
-    return result;
-}
-
-
-int main() {
-    vector<vector<char> > grid = {
-        {'1', '1', '0', '0', '0'},
-        {'1', '1', '0', '0', '0'},
-        {'0', '0', '1', '0', '0'},
-        {'0', '0', '0', '1', '1'},
-    };
-
-    cout << numIslands(grid) << endl;
-
-    return 0;
-}
