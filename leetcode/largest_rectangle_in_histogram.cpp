@@ -1,63 +1,51 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <numeric>
-#include <cmath>
-#include <queue>
-#include <stack>
-#include <map>
-#include <set>
-#include <unordered_map>
-#include <unordered_set>
-#include <limits>
-#include <cassert>
-#include <fstream>
-#include <array>
-
-using namespace std;
-
-#define endl '\n'
-
-int largestRectangleArea(const vector<int>& heights) {
-    if (heights.empty()) {
-        return 0;
-    }
-
-    stack<int> s;
-    int result = numeric_limits<int>::min();
-
-    for (size_t i = 0; i < heights.size(); ++i) {
-        if (s.empty()) {
-            s.push(i);
-        } else {
-            while (!s.empty() && heights[s.top()] > heights[i]) {
-                auto t = s.top();
-                s.pop();
-
-                result = max(result, heights[t] * (int)(s.empty() ? i : i - s.top() - 1));
-            }
-            s.push(i);
+class Solution {
+private:
+    int largestRectangleAreaDivideAndConquer(vector<int>& heights, int start, int end) {
+        if (start > end) {
+            return 0;
         }
+
+        int minIdx = start;
+        for (int i = start; i <= end; ++i) {
+            if (heights[minIdx] > heights[i]) {
+                minIdx = i;
+            }
+        }
+
+        return max({
+            heights[minIdx] * (end - start + 1),
+            largestRectangleAreaDivideAndConquer(heights, start, minIdx - 1),
+            largestRectangleAreaDivideAndConquer(heights, minIdx + 1, end)
+        });
     }
 
-    while (!s.empty()) {
-        auto t = s.top();
-        s.pop();
+    int largestRectangleAreaStack(vector<int>& heights) {
+        stack<int> heightsStack;
+        int maxArea = numeric_limits<int>::min();
 
-        result = max(result, heights[t] * (int)(s.empty() ? heights.size() : heights.size() - s.top() - 1));
+        for (size_t i = 0; i < heights.size(); ++i) {
+            while (!heightsStack.empty() && heights[heightsStack.top()] > heights[i]) {
+                int height = heights[heightsStack.top()];
+                heightsStack.pop();
+                int width = heightsStack.empty() ? i : i - heightsStack.top() - 1;
+
+                maxArea = max(maxArea, height * width);
+            }
+            heightsStack.push(i);
+        }
+
+        while (!heightsStack.empty()) {
+            int height = heights[heightsStack.top()];
+            heightsStack.pop();
+            int width = heightsStack.empty() ? heights.size() : heights.size() - heightsStack.top() - 1;
+
+            maxArea = max(maxArea, height * width);
+        }
+
+        return maxArea;
     }
-
-    return result;
-}
-
-
-int main() {
-    std::ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cout.precision(10);
-
-    cout << largestRectangleArea({2, 1, 5, 6, 2, 3}) << endl;
-
-    return 0;
-}
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        return largestRectangleAreaStack(heights);
+    }
+};
