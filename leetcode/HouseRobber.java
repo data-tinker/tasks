@@ -1,18 +1,45 @@
-public class HouseRobber {
+class Solution {
     public int rob(int[] nums) {
-        int result = 0;
-        int[] dp = new int [nums.length + 3];
-
-        for (int i = 0; i < nums.length; ++i) {
-            dp[i + 3] = Math.max(dp[i + 1] + nums[i], dp[i] + nums[i]);
-            result = Math.max(dp[i + 3], result);
-        }
-
-        return result;
+        return robRecursive(nums);
     }
 
-    public static void main(String[] args) {
-        HouseRobber hr = new HouseRobber();
-        System.out.println(hr.rob(new int[] {1, 2, 3, 1}));
+    private int robDP(int[] nums) {
+        int housesLength = nums.length;
+        int[] dp = new int[housesLength + 1];
+
+        dp[housesLength] = 0;
+        dp[housesLength - 1] = nums[housesLength - 1];
+
+        for (int i = housesLength - 2; i >= 0; --i) {
+            dp[i] = Math.max(dp[i + 1], nums[i] + dp[i + 2]);
+        }
+
+        return dp[0];
+    }
+
+    private int robRecursive(int[] nums) {
+        int[] memo = new int[nums.length];
+        Arrays.fill(memo, -1);
+
+        return robRecursive(nums, nums.length - 1, memo);
+    }
+
+    private int robRecursive(int[] nums, int idx, int[] memo) {
+        if (idx < 0) {
+            return 0;
+        } else if (idx == 0) {
+            return nums[0];
+        } else if (idx == 1) {
+            return Math.max(nums[0], nums[1]);
+        }
+
+        if (memo[idx] == -1) {
+            memo[idx] = Math.max(
+              nums[idx] + robRecursive(nums, idx - 2, memo),
+                robRecursive(nums, idx - 1, memo)
+            );
+        }
+
+        return  memo[idx];
     }
 }
